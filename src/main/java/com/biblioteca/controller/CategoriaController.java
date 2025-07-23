@@ -21,7 +21,7 @@ public class CategoriaController {
 
     @GetMapping
     public List<CategoriaDTO> listarTodas() {
-        return categoriaService.listarTodas();
+        return categoriaService.listarTodos();
     }
 
     @GetMapping("/{id}")

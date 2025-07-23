@@ -20,7 +20,7 @@ public class CategoriaService {
     }
 
     public List<CategoriaDTO> listarTodos(){
-        return categoriaRepository.findAll().stream().map(this::toDTO).toList();
+        return categoriaRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public CategoriaDTO buscarPorId(Long id) {
