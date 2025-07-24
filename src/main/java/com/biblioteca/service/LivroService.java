@@ -157,9 +157,14 @@ public class LivroService {
     }
 
     public LivroDTO importarLivro(LivroImportRequestDTO dto) throws IOException {
-        LivroDTO livroExtraido = scrapingService.extrairTituloAmazon(dto.url());
+        LivroDTO dados = scrapingService.extrairTituloAmazon(dto.url());
 
-        if (livroRepository.existsByIsbn(livroExtraido.isbn())) {
+        System.out.println("🔍 Título: " + dados.titulo());
+        System.out.println("🔍 ISBN: " + dados.isbn());
+        System.out.println("🔍 Preço: " + dados.preco());
+        System.out.println("🔍 Ano: " + dados.anoPublicacao());
+
+        if (livroRepository.existsByIsbn(dados.isbn())) {
             throw new IllegalArgumentException("Livro já existe");
         }
 
@@ -169,23 +174,19 @@ public class LivroService {
         Categoria categoria = categoriaRepository.findById(dto.categoriaId())
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
-        LivroDTO dados = scrapingService.extrairTituloAmazon(dto.url());
-
-        // ✅ VALIDAÇÃO MANUAL DOS DADOS
         if (dados.titulo() == null || dados.titulo().isBlank()) {
             throw new IllegalArgumentException("Título extraído é inválido");
         }
-        if (dados.isbn() == null || !dados.isbn().matches("\\d{10}|\\d{13}")) {
-            throw new IllegalArgumentException("ISBN extraído é inválido");
+        if (dados.isbn() == null || !dados.isbn().trim().matches("\\d{10}|\\d{13}")) {
+            throw new IllegalArgumentException("ISBN extraído é inválido: " + dados.isbn());
         }
         if (dados.preco() == null || dados.preco().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Preço inválido");
+            throw new IllegalArgumentException("Preço inválido: " + dados.preco());
         }
         if (dados.anoPublicacao() == null || dados.anoPublicacao() < 1000 || dados.anoPublicacao() > 2100) {
-            throw new IllegalArgumentException("Ano de publicação inválido");
+            throw new IllegalArgumentException("Ano de publicação inválido: " + dados.anoPublicacao());
         }
 
-        // 💾 Criação e persistência do livro
         Livro livro = new Livro();
         livro.setTitulo(dados.titulo());
         livro.setIsbn(dados.isbn());

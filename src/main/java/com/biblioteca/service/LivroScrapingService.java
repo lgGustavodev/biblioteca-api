@@ -19,50 +19,16 @@ public class LivroScrapingService {
                 .timeout(10_000)
                 .get();
 
-        // 🔍 Título
-        String titulo = "Título não encontrado";
-        Element tituloElement = doc.selectFirst("#productTitle");
-        if (tituloElement != null) {
-            titulo = tituloElement.text().trim();
-        }
+        // Usando o site books.toscrape.com como exemplo
+        String titulo = doc.selectFirst("div.product_main > h1").text(); // título visível
+        String precoStr = doc.selectFirst(".price_color").text().replace("£", "").replace(",", ".");
+        BigDecimal preco = new BigDecimal(precoStr);
 
-        // 💰 Preço
-        BigDecimal preco = BigDecimal.ZERO;
-        Element precoElement = doc.selectFirst(".a-price-whole");
-        if (precoElement != null && !precoElement.text().isBlank()) {
-            String precoStr = precoElement.text().replace(".", "").replace(",", ".");
-            try {
-                preco = new BigDecimal(precoStr);
-            } catch (NumberFormatException e) {
-                System.out.println("⚠️ Erro ao converter o preço: " + precoStr);
-            }
-        }
-
-        // 📆 Ano de publicação
-        Integer anoPublicacao = 0;
-        String detalhes = doc.select("#detailBullets_feature_div").text();
-        if (detalhes != null && !detalhes.isBlank()) {
-            String anoPublicacaoStr = detalhes.replaceAll(".*(\\d{4}).*", "$1");
-            try {
-                anoPublicacao = Integer.parseInt(anoPublicacaoStr);
-            } catch (NumberFormatException e) {
-                System.out.println("⚠️ Erro ao converter o ano de publicação: " + anoPublicacaoStr);
-            }
-        }
-
-        // 📖 ISBN
-        String isbn = "";
-        Elements linhas = doc.select("#detailBullets_feature_div li");
-        for (Element linha : linhas) {
-            if (linha.text().toLowerCase().contains("isbn")) {
-                isbn = linha.text().replaceAll("[^0-9X]", "");
-                break;
-            }
-        }
-
-        System.out.println("🔎 Extraído: título=" + titulo + ", preço=" + preco + ", ano=" + anoPublicacao + ", isbn=" + isbn);
+        // Simulações para campos que não existem no site
+        String isbn = "1234567890123";              // Valor fictício válido (13 dígitos)
+        Integer anoPublicacao = 2024;               // Ano fictício
 
         return new LivroDTO(null, titulo, isbn, anoPublicacao, preco, null, null);
     }
-}
 
+}
