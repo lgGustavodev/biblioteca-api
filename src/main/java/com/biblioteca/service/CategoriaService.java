@@ -2,6 +2,7 @@ package com.biblioteca.service;
 
 import com.biblioteca.dto.CategoriaCreateDTO;
 import com.biblioteca.dto.CategoriaDTO;
+import com.biblioteca.dto.LivroDTO;
 import com.biblioteca.model.Categoria;
 import com.biblioteca.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -61,4 +62,20 @@ public class CategoriaService {
     }
 
 
+    public List<LivroDTO> listarLivrosPorCategoria(Long categoriaId) {
+        Categoria categoria = categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+
+        return categoria.getLivros().stream()
+                .map(livro -> new LivroDTO(
+                        livro.getId(),
+                        livro.getTitulo(),
+                        livro.getIsbn(),
+                        livro.getAnoPublicacao(),
+                        livro.getPreco(),
+                        livro.getAutor().getNome(),
+                        categoria.getNome()
+                ))
+                .toList();
+    }
 }

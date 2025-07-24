@@ -142,4 +142,11 @@ public class LivroService {
                 categoria.getNome()
         );
     }
+
+    public void deletar(Long id) {
+        Livro livro = livroRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Livro não encontrado"));
+
+        livroRepository.delete(livro);
+    }
 }

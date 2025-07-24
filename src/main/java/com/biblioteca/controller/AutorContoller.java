@@ -3,9 +3,12 @@ package com.biblioteca.controller;
 
 import com.biblioteca.dto.AutorCreateDTO;
 import com.biblioteca.dto.AutorDTO;
+import com.biblioteca.dto.LivroDTO;
 import com.biblioteca.service.AutorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/autores")
@@ -35,5 +38,10 @@ public class AutorContoller {
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
         autorService.deletar(id);
+    }
+
+    @GetMapping("/{id}/livros")
+    public List<LivroDTO> listarLivrosPorAutor(@PathVariable Long id){
+        return autorService.listarLivrosPorAutor(id);
     }
 }

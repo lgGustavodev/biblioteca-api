@@ -49,6 +49,11 @@ public class LivroController {
         return livroService.atualizar(id, dto);
     }
 
+    @DeleteMapping("/{id}")
+    public void deletar(@PathVariable Long id){
+        livroService.deletar(id);
+    }
+
 
 
 }

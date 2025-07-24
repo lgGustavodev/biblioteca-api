@@ -3,6 +3,7 @@ package com.biblioteca.controller;
 
 import com.biblioteca.dto.CategoriaCreateDTO;
 import com.biblioteca.dto.CategoriaDTO;
+import com.biblioteca.dto.LivroDTO;
 import com.biblioteca.service.CategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,10 @@ public class CategoriaController {
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
         categoriaService.deletar(id);
+    }
+
+    @GetMapping("/{id}/livros")
+    public List<LivroDTO> listarLivrosPorCategoria(@PathVariable Long id) {
+        return categoriaService.listarLivrosPorCategoria(id);
     }
 }
