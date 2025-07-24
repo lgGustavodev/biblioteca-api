@@ -11,6 +11,8 @@ import com.biblioteca.repository.LivroRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LivroService {
 
@@ -25,9 +27,9 @@ public class LivroService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public LivroDTO criar(LivroCreateDTO dto) throws IllegalAccessException {
+    public LivroDTO criar(LivroCreateDTO dto) {
         if (livroRepository.existsByIsbn(dto.isbn())){
-            throw new IllegalAccessException("Livro com esse ISBN já existe");
+            throw new IllegalArgumentException("Livro com esse ISBN já existe");
         }
         Autor autor = autorRepository.findById(dto.autorId())
                 .orElseThrow(() ->new EntityNotFoundException("Autor não encontrado"));
@@ -55,4 +57,38 @@ public class LivroService {
                 categoria.getNome());
     }
 
+    public List<LivroDTO> listarTodos(Long categoriaId, Integer ano, Long autorId) {
+        List<Livro> livros = livroRepository.findAll().stream()
+                .filter(livro -> categoriaId == null || livro.getId().equals(categoriaId))
+                .filter(livro -> ano == null || livro.getAnoPublicacao().equals(ano))
+                .filter(livro -> autorId == null || livro.getAutor().getId().equals(autorId))
+                .toList();
+
+        return livros.stream().map(livro ->
+                new LivroDTO(
+                        livro.getId(),
+                        livro.getTitulo(),
+                        livro.getIsbn(),
+                        livro.getAnoPublicacao(),
+                        livro.getPreco(),
+                        livro.getAutor().getNome(),
+                        livro.getCategoria().getNome()
+                )).toList();
+    }
+
+    public LivroDTO buscarPorId(Long id) {
+        Livro livro = livroRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+
+
+        return new LivroDTO(
+                livro.getId(),
+                livro.getTitulo(),
+                livro.getIsbn(),
+                livro.getAnoPublicacao(),
+                livro.getPreco(),
+                livro.getAutor().getNome(),
+                livro.getCategoria().getNome()
+        );
+    }
 }
