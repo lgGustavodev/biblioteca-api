@@ -39,4 +39,16 @@ public class LivroController {
     public LivroDTO buscarPorId(@PathVariable Long id) {
         return livroService.buscarPorId(id);
     }
+
+    @GetMapping("/search")
+    public List<LivroDTO> buscarPorTitulo(@RequestParam String titulo) {
+        return livroService.buscarPorTitulo(titulo);
+    }
+    @PutMapping("/{id}")
+    public LivroDTO atualizar(@PathVariable Long id, @RequestBody @Valid LivroCreateDTO dto) {
+        return livroService.atualizar(id, dto);
+    }
+
+
+
 }

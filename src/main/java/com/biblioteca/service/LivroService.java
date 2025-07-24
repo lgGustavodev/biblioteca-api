@@ -9,7 +9,9 @@ import com.biblioteca.repository.AutorRepository;
 import com.biblioteca.repository.CategoriaRepository;
 import com.biblioteca.repository.LivroRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -89,6 +91,55 @@ public class LivroService {
                 livro.getPreco(),
                 livro.getAutor().getNome(),
                 livro.getCategoria().getNome()
+        );
+    }
+
+    public List<LivroDTO> buscarPorTitulo(String titulo) {
+        List<Livro> livros = livroRepository.findByTituloContainingIgnoreCase(titulo);
+
+        return livros.stream()
+                .map(livro -> new LivroDTO(
+                        livro.getId(),
+                        livro.getTitulo(),
+                        livro.getIsbn(),
+                        livro.getAnoPublicacao(),
+                        livro.getPreco(),
+                        livro.getAutor().getNome(),
+                        livro.getCategoria().getNome()))
+                .toList();
+    }
+
+
+    public LivroDTO atualizar(Long id, @Valid LivroCreateDTO dto) {
+        Livro livro = livroRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+        if (!livro.getIsbn().equals(dto.isbn()) &&  livroRepository.existsByIsbn(dto.isbn())){
+            throw new IllegalArgumentException("Já existe outro livro com esse ISBN");
+        }
+
+        Autor autor = autorRepository.findById(dto.autorId())
+                .orElseThrow(() -> new EntityNotFoundException("Autor não encontrado"));
+
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+
+
+        livro.setTitulo(dto.titulo());
+        livro.setIsbn(dto.isbn());
+        livro.setAnoPublicacao(dto.anoPublicacao());
+        livro.setPreco(dto.preco());
+        livro.setAutor(autor);
+        livro.setCategoria(categoria);
+
+        livroRepository.save(livro);
+
+        return new LivroDTO(
+                livro.getId(),
+                livro.getTitulo(),
+                livro.getIsbn(),
+                livro.getAnoPublicacao(),
+                livro.getPreco(),
+                autor.getNome(),
+                categoria.getNome()
         );
     }
 }
