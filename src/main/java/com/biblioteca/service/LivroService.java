@@ -2,6 +2,7 @@ package com.biblioteca.service;
 
 import com.biblioteca.dto.LivroCreateDTO;
 import com.biblioteca.dto.LivroDTO;
+import com.biblioteca.dto.LivroImportRequestDTO;
 import com.biblioteca.model.Autor;
 import com.biblioteca.model.Categoria;
 import com.biblioteca.model.Livro;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -21,12 +24,15 @@ public class LivroService {
     private final LivroRepository livroRepository;
     private final AutorRepository autorRepository;
     private final CategoriaRepository categoriaRepository;
+    private final LivroScrapingService scrapingService;
 
 
-    public LivroService(LivroRepository livroRepository, AutorRepository autorRepository, CategoriaRepository categoriaRepository) {
+
+    public LivroService(LivroRepository livroRepository, AutorRepository autorRepository, CategoriaRepository categoriaRepository, LivroScrapingService scrapingService) {
         this.livroRepository = livroRepository;
         this.autorRepository = autorRepository;
         this.categoriaRepository = categoriaRepository;
+        this.scrapingService = scrapingService;
     }
 
     public LivroDTO criar(LivroCreateDTO dto) {
@@ -149,4 +155,39 @@ public class LivroService {
 
         livroRepository.delete(livro);
     }
+
+    public LivroDTO importarLivro(LivroImportRequestDTO dto) throws IOException {
+        if (livroRepository.existsByIsbn("FAKE_ISBN")) {
+            throw new IllegalArgumentException("Livro já existe");
+        }
+
+        Autor autor = autorRepository.findById(dto.autorId())
+                .orElseThrow(() -> new EntityNotFoundException("Autor não encontrado"));
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+
+        // Exemplo: buscar apenas o título inicialmente
+        String titulo = scrapingService.extrairTituloAmazon(dto.url());
+
+        Livro livro = new Livro();
+        livro.setTitulo(titulo);
+        livro.setIsbn("FAKE_ISBN"); // Você pode extrair de verdade depois
+        livro.setAnoPublicacao(2020); // Pode extrair também se quiser
+        livro.setPreco(BigDecimal.valueOf(49.90));
+        livro.setAutor(autor);
+        livro.setCategoria(categoria);
+
+        livroRepository.save(livro);
+
+        return new LivroDTO(
+                livro.getId(),
+                livro.getTitulo(),
+                livro.getIsbn(),
+                livro.getAnoPublicacao(),
+                livro.getPreco(),
+                autor.getNome(),
+                categoria.getNome()
+        );
+    }
+
 }
