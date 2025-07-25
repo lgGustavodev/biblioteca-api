@@ -129,8 +129,8 @@ public class LivroService {
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
 
-        livro.setTitulo("titulo exemplo");
-        livro.setIsbn("1234567890");
+        livro.setTitulo(dto.titulo());
+        livro.setIsbn(dto.isbn());
         livro.setAnoPublicacao(dto.anoPublicacao());
         livro.setPreco(dto.preco());
         livro.setAutor(autor);

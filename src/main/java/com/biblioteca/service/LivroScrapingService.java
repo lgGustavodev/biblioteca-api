@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Random;
 
 @Service
 public class LivroScrapingService {
+
+    private Random random = new Random();
 
     public LivroDTO extrairTituloAmazon(String url) throws IOException {
         Document doc = Jsoup.connect(url)
@@ -24,11 +27,20 @@ public class LivroScrapingService {
         String precoStr = doc.selectFirst(".price_color").text().replace("£", "").replace(",", ".");
         BigDecimal preco = new BigDecimal(precoStr);
 
-        // Simulações para campos que não existem no site
-        String isbn = "1234567890123";              // Valor fictício válido (13 dígitos)
+        // Gera ISBN aleatório para evitar conflito nos testes
+        String isbn = gerarIsbnAleatorio();
         Integer anoPublicacao = 2024;               // Ano fictício
 
         return new LivroDTO(null, titulo, isbn, anoPublicacao, preco, null, null);
+    }
+
+    private String gerarIsbnAleatorio() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 13; i++) {
+            int digito = random.nextInt(10);
+            sb.append(digito);
+        }
+        return sb.toString();
     }
 
 }
