@@ -37,42 +37,13 @@ Uma aplicação em **Java 17** que oferece um sistema de biblioteca digital com 
 
 ## Instalação e Execução
 
-
+```bash
 # Clone o repositório
-git clone https://github.com/lgGustavodev/biblioteca-api.git
+git clone https://github.com/seu-usuario/seu-repositorio.git
 
 # Acesse o diretório do projeto
 cd biblioteca-api
 
 # Execute a aplicação
 ./mvnw spring-boot:run
-
-
-Acesso Rápido
-Recurso	URL	Observações
-Swagger UI	http://localhost:8080/swagger-ui/index.html	Documentação e testes interativos
-H2 Console	http://localhost:8080/h2-console	JDBC URL: jdbc:h2:mem:testdb
-User: sa
-Senha: (vazio)
-
-Endpoints Disponíveis
-Autores
-Método	Endpoint	Descrição
-POST	/api/autores	Cadastrar autor
-GET	/api/autores	Listar todos autores
-
-Categorias
-Método	Endpoint	Descrição
-POST	/api/categorias	Cadastrar categoria
-GET	/api/categorias	Listar todas categorias
-
-Livros
-Método	Endpoint	Descrição
-POST	/api/livros	Cadastrar livro manualmente
-GET	/api/livros	Listar todos os livros
-GET	/api/livros/{id}	Detalhar livro por ID
-
-Scraping
-Método	Endpoint	Descrição
-POST	/api/livros/importar	Importar livro via URL externa (scraping)
 
