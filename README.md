@@ -17,6 +17,17 @@ Uma aplicação em **Java 17** que oferece um sistema de biblioteca digital com 
 
 ---
 
+## 🚀 Funcionalidades principais
+
+- Cadastro de Livros, Categorias e Autores
+- Filtro de livros por título, autor, categoria ou ano
+- Atualização e exclusão de livros
+- Importação de dados de um livro via scraping (título, preço, ISBN e ano)
+- Validações de regras de negócio
+- Documentação da API com Swagger
+
+---
+
 ## Pré-requisitos
 
 - Java 17+ instalado  
