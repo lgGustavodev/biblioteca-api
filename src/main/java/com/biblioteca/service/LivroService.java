@@ -159,10 +159,10 @@ public class LivroService {
     public LivroDTO importarLivro(LivroImportRequestDTO dto) throws IOException {
         LivroDTO dados = scrapingService.extrairTituloAmazon(dto.url());
 
-        System.out.println("🔍 Título: " + dados.titulo());
-        System.out.println("🔍 ISBN: " + dados.isbn());
-        System.out.println("🔍 Preço: " + dados.preco());
-        System.out.println("🔍 Ano: " + dados.anoPublicacao());
+        System.out.println(" Título: " + dados.titulo());
+        System.out.println(" ISBN: " + dados.isbn());
+        System.out.println(" Preço: " + dados.preco());
+        System.out.println(" Ano: " + dados.anoPublicacao());
 
         if (livroRepository.existsByIsbn(dados.isbn())) {
             throw new IllegalArgumentException("Livro já existe");

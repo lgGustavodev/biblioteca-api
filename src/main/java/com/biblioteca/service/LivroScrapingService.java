@@ -22,14 +22,14 @@ public class LivroScrapingService {
                 .timeout(10_000)
                 .get();
 
-        // Usando o site books.toscrape.com como exemplo
+
         String titulo = doc.selectFirst("div.product_main > h1").text(); // título visível
         String precoStr = doc.selectFirst(".price_color").text().replace("£", "").replace(",", ".");
         BigDecimal preco = new BigDecimal(precoStr);
 
-        // Gera ISBN aleatório para evitar conflito nos testes
+
         String isbn = gerarIsbnAleatorio();
-        Integer anoPublicacao = 2024;               // Ano fictício
+        Integer anoPublicacao = 2024;   
 
         return new LivroDTO(null, titulo, isbn, anoPublicacao, preco, null, null);
     }
