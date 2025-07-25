@@ -28,7 +28,7 @@ Uma aplicação em **Java 17** que oferece um sistema de biblioteca digital com 
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/lgGustavodev/biblioteca-api.git
 
 # Acesse o diretório do projeto
 cd biblioteca-api
